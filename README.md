@@ -15,6 +15,8 @@ GitHub CLI-like工具，专为OpenClaw设计，允许通过各种IM通道控制G
 
 ## 安装说明 | Installation
 
+### 方法一：克隆仓库安装 | Method 1: Clone Repository
+
 1. **克隆仓库 | Clone Repository**：
    ```bash
    git clone https://github.com/EdwardWason/gitskills.git
@@ -46,6 +48,75 @@ GitHub CLI-like工具，专为OpenClaw设计，允许通过各种IM通道控制G
    IM_CHANNEL=你的IM通道
    IM_API_KEY=你的IM API密钥
    ```
+
+### 方法二：通过Releases安装 | Method 2: Install via Releases
+
+1. **下载技能压缩包 | Download Skill Zip Package**：
+   - 访问 [GitHub Releases](https://github.com/EdwardWason/gitskills/releases)
+   - 下载最新版本的 `github-operations-skill.zip` 文件
+
+2. **安装到OpenClaw | Install to OpenClaw**：
+   - 打开OpenClaw
+   - 进入「技能管理」页面
+   - 点击「安装技能」按钮
+   - 选择下载的 `github-operations-skill.zip` 文件
+   - 等待安装完成
+
+3. **配置环境变量 | Configure Environment Variables**：
+   - 安装完成后，在OpenClaw技能管理页面找到「github-operations」技能
+   - 点击「配置」按钮
+   - 填写所需的环境变量（GitHub Token、IM通道配置等）
+   - 保存配置
+
+### 如何创建技能压缩包（维护者指南） | How to Create Skill Zip Package (Maintainer Guide)
+
+1. **更新技能文件 | Update Skill Files**：
+   - 确保 `github-operations` 目录中的所有文件都是最新的
+   - 包括 `SKILL.md`、`_meta.json`、`requirements.txt` 和 `scripts/` 目录中的代码文件
+
+2. **创建压缩包 | Create Zip Package**：
+   - 在项目根目录执行以下命令：
+     ```bash
+     # Windows
+     Compress-Archive -Path ".trae\skills\github-operations\*" -DestinationPath "github-operations-skill.zip" -Force
+     
+     # macOS/Linux
+     zip -r github-operations-skill.zip .trae/skills/github-operations/
+     ```
+
+3. **发布到GitHub Releases | Publish to GitHub Releases**：
+   - 访问 GitHub 仓库页面
+   - 点击「Releases」选项卡
+   - 点击「Draft a new release」按钮
+   - 填写版本号、标题和描述
+   - 上传 `github-operations-skill.zip` 文件
+   - 点击「Publish release」按钮
+
+### 方法三：手动安装到OpenClaw | Method 3: Manual Installation to OpenClaw
+
+1. **克隆仓库 | Clone Repository**：
+   ```bash
+   git clone https://github.com/EdwardWason/gitskills.git
+   cd gitskills
+   ```
+
+2. **复制技能到OpenClaw | Copy Skill to OpenClaw**：
+   - Windows：
+     ```bash
+     robocopy ".trae\skills\github-operations" "C:\Users\你的用户名\.openclaw\skills\github-operations" /E
+     ```
+   - macOS/Linux：
+     ```bash
+     cp -r .trae/skills/github-operations ~/.openclaw/skills/
+     ```
+
+3. **安装依赖 | Install Dependencies**：
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **配置环境变量 | Configure Environment Variables**：
+   - 在OpenClaw中配置环境变量，或创建 `.env` 文件在技能目录中
 
 ## 使用方法 | Usage
 
