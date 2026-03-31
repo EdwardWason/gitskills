@@ -68,29 +68,6 @@ GitHub CLI-like工具，专为OpenClaw设计，允许通过各种IM通道控制G
    - 填写所需的环境变量（GitHub Token、IM通道配置等）
    - 保存配置
 
-### 如何创建技能压缩包（维护者指南） | How to Create Skill Zip Package (Maintainer Guide)
-
-1. **更新技能文件 | Update Skill Files**：
-   - 确保 `github-operations` 目录中的所有文件都是最新的
-   - 包括 `SKILL.md`、`_meta.json`、`requirements.txt` 和 `scripts/` 目录中的代码文件
-
-2. **创建压缩包 | Create Zip Package**：
-   - 在项目根目录执行以下命令：
-     ```bash
-     # Windows
-     Compress-Archive -Path ".trae\skills\github-operations\*" -DestinationPath "github-operations-skill.zip" -Force
-     
-     # macOS/Linux
-     zip -r github-operations-skill.zip .trae/skills/github-operations/
-     ```
-
-3. **发布到GitHub Releases | Publish to GitHub Releases**：
-   - 访问 GitHub 仓库页面
-   - 点击「Releases」选项卡
-   - 点击「Draft a new release」按钮
-   - 填写版本号、标题和描述
-   - 上传 `github-operations-skill.zip` 文件
-   - 点击「Publish release」按钮
 
 ### 方法三：手动安装到OpenClaw | Method 3: Manual Installation to OpenClaw
 
