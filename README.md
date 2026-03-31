@@ -91,11 +91,66 @@ python main.py issue list --repo my-repo
 
 ## 支持的IM通道
 
-- Slack
-- Discord
-- Telegram
-- 微信
-- 邮件
+- **Slack**：企业协作平台
+- **Discord**：游戏社区平台
+- **Telegram**：即时通讯应用
+- **飞书**：字节跳动企业协作平台
+- **企业微信**：腾讯企业协作平台
+- **微信个人号**：通过iLink Bot接入
+- **邮件**：传统邮件通知
+
+## IM通道配置
+
+### 飞书配置
+
+1. 获取飞书机器人Webhook URL
+2. 在`.env`文件中添加：
+   ```
+   FEISHU_WEBHOOK_URL=https://open.feishu.cn/open-apis/bot/v2/hook/your-webhook-id
+   ```
+3. 运行示例：
+   ```bash
+   python examples/feishu_integration.py
+   ```
+
+### 企业微信配置
+
+1. 获取企业微信应用配置
+2. 在`.env`文件中添加：
+   ```
+   WECOM_CORP_ID=你的企业ID
+   WECOM_APP_SECRET=你的应用密钥
+   WECOM_AGENT_ID=你的应用ID
+   ```
+3. 运行示例：
+   ```bash
+   python examples/wechat_integration.py
+   ```
+
+### 微信个人号配置
+
+1. 获取iLink Bot Token
+2. 在`.env`文件中添加：
+   ```
+   WEIXIN_BOT_TOKEN=你的iLink Bot Token
+   WEIXIN_API_URL=https://api.ilink.qq.com
+   ```
+3. 运行示例：
+   ```bash
+   python examples/wechat_integration.py
+   ```
+
+### Slack配置
+
+1. 获取Slack API Token
+2. 在`.env`文件中添加：
+   ```
+   SLACK_API_TOKEN=你的Slack API Token
+   ```
+3. 运行示例：
+   ```bash
+   python examples/slack_integration.py
+   ```
 
 ## 贡献指南
 
