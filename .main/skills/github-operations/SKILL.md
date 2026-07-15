@@ -1,7 +1,7 @@
 ---
 name: "github-operations"
-version: "1.1.0"
-description: "GitHub操作技能，支持仓库管理、分支管理、PR和Issue管理。当用户需要操作GitHub仓库时调用。"
+version: "1.2.0"
+description: "GitHub仓库管理技能，支持仓库/分支/PR/Issue的CRUD操作。Do NOT use for IM messaging, git history rewriting, or repository cloning."
 permissions:
   - github_repo_read
   - github_repo_write
@@ -16,7 +16,7 @@ permissions:
 
 ⚠️ **安全警告**：本技能涉及GitHub仓库的创建、删除等操作。删除仓库等操作是不可逆的，请谨慎使用！
 
-本技能提供GitHub操作的完整解决方案，包括仓库管理、分支管理、PR和Issue管理，以及IM通道集成。所有操作通过GitHub API执行，不执行本地subprocess命令。
+本技能专注于GitHub仓库管理，包括仓库管理、分支管理、PR和Issue管理。所有操作通过GitHub API执行，不执行本地subprocess命令，不包含任何IM消息发送功能。
 
 ## 核心功能
 
@@ -25,7 +25,7 @@ permissions:
 - **创建仓库**：支持设置仓库名称、描述和隐私设置
 - **列出仓库**：获取用户所有仓库列表
 - **查看仓库详情**：获取仓库的详细信息
-- **删除仓库**：安全删除指定仓库
+- **删除仓库**：安全删除指定仓库（需要二次确认）
 
 ### 2. 分支管理
 
@@ -42,33 +42,16 @@ permissions:
 - **创建Issue**：支持设置标题和内容
 - **列出Issue**：获取仓库的开放Issue
 
-### 5. 安全最佳实践
+### 5. Git历史清理指导
 
-- **Token管理**：使用环境变量存储GitHub token
-- **.gitignore配置**：确保敏感文件不被提交
-- **Git历史清理**：移除已提交的敏感信息
-- **最小权限原则**：使用最小权限的token
-
-### 6. 开源项目规范
-
-- **README.md**：项目说明、安装指南、使用方法
-- **LICENSE**：开源许可证文件
-- **CONTRIBUTING.md**：贡献指南
-- **标准目录结构**：组织代码和文档
-
-### 7. IM通道集成
-
-- **飞书**：通过Webhook发送消息
-- **企业微信**：通过企业微信应用发送消息
-- **微信个人号**：通过iLink Bot发送消息
-- **Slack**：通过Slack API发送消息
+- **清理指导**：提供清理Git历史中敏感文件的操作指南（仅指导，不执行命令）
 
 ## 环境配置
 
 ### 1. 安装依赖
 
 ```bash
-pip install PyGithub python-dotenv requests
+pip install PyGithub python-dotenv
 ```
 
 ### 2. 配置环境变量
@@ -78,21 +61,6 @@ pip install PyGithub python-dotenv requests
 ```
 # GitHub API Token
 GITHUB_TOKEN=你的GitHub令牌
-
-# 飞书配置
-FEISHU_WEBHOOK_URL=https://open.feishu.cn/open-apis/bot/v2/hook/your-webhook-id
-
-# 企业微信配置
-WECOM_CORP_ID=你的企业ID
-WECOM_APP_SECRET=你的应用密钥
-WECOM_AGENT_ID=你的应用ID
-
-# 微信个人号配置
-WEIXIN_BOT_TOKEN=你的iLink Bot Token
-WEIXIN_API_URL=https://api.ilink.qq.com
-
-# Slack配置
-SLACK_API_TOKEN=你的Slack API Token
 ```
 
 ## 使用示例
@@ -153,120 +121,23 @@ python main.py issue create --repo my-repo --title "Bug报告" --body "有东西
 python main.py issue list --repo my-repo
 ```
 
+### Git历史清理
+
+```bash
+# 获取清理敏感文件的操作指南
+python main.py clean --repo my-repo --file .env
+```
+
+> **注意**：clean命令仅提供操作指南，不会执行任何实际的git命令。请按照指南在本地手动执行。
+
 ## 安全措施
 
 1. **Token安全**：GitHub token存储在环境变量中，不硬编码在代码中
 2. **权限控制**：使用最小权限的token
-3. **操作验证**：重要操作需要用户确认
+3. **操作验证**：删除仓库等危险操作需要用户确认
 4. **日志记录**：记录所有操作，便于审计
 5. **错误处理**：处理异常情况，避免信息泄露
-
-## IM通道集成示例
-
-### 飞书集成
-
-```python
-class FeishuIntegration:
-    def __init__(self):
-        self.feishu_webhook_url = os.getenv('FEISHU_WEBHOOK_URL')
-    
-    def send_message(self, message):
-        if self.feishu_webhook_url:
-            payload = {
-                "msg_type": "text",
-                "content": {
-                    "text": message
-                }
-            }
-            response = requests.post(self.feishu_webhook_url, json=payload)
-            return response.json()
-        return {"error": "FEISHU_WEBHOOK_URL not set"}
-```
-
-### 微信集成
-
-```python
-class WeChatIntegration:
-    def __init__(self):
-        # 企业微信配置
-        self.wecom_corp_id = os.getenv('WECOM_CORP_ID')
-        self.wecom_app_secret = os.getenv('WECOM_APP_SECRET')
-        self.wecom_agent_id = os.getenv('WECOM_AGENT_ID')
-        
-        # 微信个人号配置（使用iLink Bot）
-        self.weixin_bot_token = os.getenv('WEIXIN_BOT_TOKEN')
-        self.weixin_api_url = os.getenv('WEIXIN_API_URL', 'https://api.ilink.qq.com')
-```
-
-## 开源项目规范
-
-### README.md 模板
-
-```markdown
-# 项目名称
-
-项目描述
-
-## 功能特性
-
-- 功能1
-- 功能2
-- 功能3
-
-## 安装说明
-
-1. 克隆仓库
-2. 安装依赖
-3. 配置环境变量
-
-## 使用方法
-
-### 命令示例
-
-```bash
-# 命令1
-# 命令2
-# 命令3
-```
-
-## 贡献指南
-
-详见[CONTRIBUTING.md](CONTRIBUTING.md)文件。
-
-## 许可证
-
-本项目采用MIT许可证 - 详见[LICENSE](LICENSE)文件。
-```
-
-### .gitignore 模板
-
-```
-# 环境变量文件
-.env
-
-# 依赖目录
-__pycache__/
-*.py[cod]
-
-# 编辑器文件
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# 系统文件
-.DS_Store
-Thumbs.db
-```
-
-## 最佳实践
-
-1. **代码组织**：使用模块化设计，分离核心逻辑和命令行接口
-2. **错误处理**：使用try-except捕获异常，提供友好的错误信息
-3. **文档编写**：使用中文编写清晰的文档，便于国内开发者理解
-4. **安全意识**：时刻注意保护敏感信息，避免硬编码
-5. **版本控制**：使用Git进行版本控制，提交有意义的commit信息
+6. **无外部数据出口**：不包含IM消息发送功能，避免数据泄露风险
 
 ## 常见问题
 
@@ -288,4 +159,4 @@ Thumbs.db
 
 ## 总结
 
-本技能提供了GitHub操作的完整解决方案，涵盖了仓库管理、分支管理、PR和Issue管理、安全最佳实践、开源项目规范和IM通道集成。通过使用本技能，用户可以安全、高效地管理GitHub仓库，创建标准化的开源项目，并通过各种IM通道进行控制。
+本技能专注于GitHub仓库管理，提供仓库、分支、PR和Issue的完整CRUD操作。通过使用本技能，用户可以安全、高效地管理GitHub仓库。所有操作通过GitHub API执行，不包含任何外部消息发送功能，确保数据安全。
