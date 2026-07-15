@@ -126,14 +126,36 @@ class GitSkills:
         if not bot_token:
             raise ValueError("WEIXIN_BOT_TOKEN not set")
         
+        if not isinstance(message, str) or not message.strip():
+            raise ValueError("Message must be a non-empty string")
+        
+        if len(message) > 2000:
+            raise ValueError("Message exceeds maximum length of 2000 characters")
+        
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {bot_token}"
+        }
+        
         payload = {
-            "token": bot_token,
             "type": "text",
             "content": message
         }
-        response = requests.post(f"{api_url}/bot/send", json=payload)
-        response.raise_for_status()
-        return "消息已发送到微信"
+        
+        try:
+            response = requests.post(f"{api_url}/bot/send", json=payload, headers=headers)
+            response.raise_for_status()
+            
+            response_data = response.json()
+            if response_data.get('code') != 0:
+                logging.error(f"WeChat message send failed: {response_data.get('message', 'Unknown error')}")
+                return f"错误: 发送消息失败"
+            
+            logging.info("WeChat message sent successfully")
+            return "消息已发送到微信"
+        except requests.exceptions.RequestException as e:
+            logging.error(f"WeChat message send error: {type(e).__name__}")
+            return f"错误: 发送消息失败"
     
     def _send_slack_message(self, message):
         """发送消息到Slack"""
@@ -355,10 +377,19 @@ class GitSkills:
             return f"错误: 无法列出Issue"
     
     def clean_git_history(self, repo_name, file_path):
-        """清理Git历史中的敏感文件
+        """清理Git历史中的敏感文件（仅提供指导）
         
-        使用git filter-branch命令清理历史中的敏感文件
-        注意：此操作会重写Git历史，需要谨慎使用
+        由于安全考虑，此方法仅提供清理Git历史的操作指南，
+        不执行实际的subprocess命令。
+        
+        操作指南：
+        1. 在本地克隆仓库：git clone <repo_url>
+        2. 进入仓库目录：cd <repo_name>
+        3. 执行git filter-branch：git filter-branch --force --index-filter 'git rm --cached --ignore-unmatch <file_path>' --prune-empty --tag-name-filter cat -- --all
+        4. 强制推送到远程：git push origin --force --all 和 git push origin --force --tags
+        5. 通知所有协作者重新克隆仓库
+        
+        ⚠️ 警告：此操作会重写Git历史，需要谨慎使用！
         """
         # 输入验证
         if not repo_name or not isinstance(repo_name, str):
@@ -366,44 +397,39 @@ class GitSkills:
         if not file_path or not isinstance(file_path, str):
             raise ValueError("File path must be a non-empty string")
         
-        import subprocess
-        import os
-        
         try:
-            # 获取仓库本地路径
             repo = self._call_with_retry(self.user.get_repo, repo_name)
             clone_url = repo.clone_url
             
-            # 临时目录
-            temp_dir = f"temp_{repo_name}"
-            
-            # 克隆仓库
-            subprocess.run(['git', 'clone', clone_url, temp_dir], check=True, capture_output=True)
-            
-            # 进入临时目录
-            os.chdir(temp_dir)
-            
-            # 执行git filter-branch
-            cmd = [
-                'git', 'filter-branch', '--force', 
-                '--index-filter', f'git rm --cached --ignore-unmatch {file_path}',
-                '--prune-empty', '--tag-name-filter', 'cat', '--', '--all'
-            ]
-            subprocess.run(cmd, check=True, capture_output=True)
-            
-            # 强制推送到远程
-            subprocess.run(['git', 'push', 'origin', '--force', '--all'], check=True, capture_output=True)
-            subprocess.run(['git', 'push', 'origin', '--force', '--tags'], check=True, capture_output=True)
-            
-            # 清理临时目录
-            os.chdir('..')
-            import shutil
-            shutil.rmtree(temp_dir)
-            
-            return f"Git历史清理成功: 已从历史中移除 {file_path}"
+            guide = f"""
+⚠️ 安全警告：Git历史清理操作会重写仓库历史，此操作不可逆转！
+
+请在本地手动执行以下步骤清理仓库 '{repo_name}' 中的文件 '{file_path}'：
+
+1. 克隆仓库：
+   git clone {clone_url}
+
+2. 进入仓库目录：
+   cd {repo_name}
+
+3. 执行git filter-branch（重写历史）：
+   git filter-branch --force --index-filter 'git rm --cached --ignore-unmatch {file_path}' --prune-empty --tag-name-filter cat -- --all
+
+4. 强制推送到远程：
+   git push origin --force --all
+   git push origin --force --tags
+
+5. 通知所有协作者重新克隆仓库
+
+📝 建议：在执行此操作前，请确保：
+- 已备份仓库数据
+- 所有协作者已提交并推送本地更改
+- 理解此操作的风险和影响
+"""
+            return guide
         except Exception as e:
-            logging.error(f"Error cleaning git history: {type(e).__name__}: {str(e)}")
-            return f"错误: 无法清理Git历史"
+            logging.error(f"Error generating clean guide for repo {repo_name}: {type(e).__name__}")
+            return f"错误: 无法生成清理指南"
 
 
 

@@ -1,11 +1,22 @@
 ---
 name: "github-operations"
-description: "提供GitHub操作的完整解决方案，包括仓库管理、分支管理、PR和Issue管理、安全最佳实践、开源项目规范和IM通道集成。当用户需要操作GitHub仓库、创建开源项目或集成IM通道时调用。"
+version: "1.1.0"
+description: "GitHub操作技能，支持仓库管理、分支管理、PR和Issue管理。当用户需要操作GitHub仓库时调用。"
+permissions:
+  - github_repo_read
+  - github_repo_write
+  - github_pr_read
+  - github_pr_write
+  - github_issue_read
+  - github_issue_write
+  - network_external
 ---
 
 # GitHub 操作技能
 
-本技能提供GitHub操作的完整解决方案，包括仓库管理、分支管理、PR和Issue管理、安全最佳实践、开源项目规范和IM通道集成。
+⚠️ **安全警告**：本技能涉及GitHub仓库的创建、删除等操作。删除仓库等操作是不可逆的，请谨慎使用！
+
+本技能提供GitHub操作的完整解决方案，包括仓库管理、分支管理、PR和Issue管理，以及IM通道集成。所有操作通过GitHub API执行，不执行本地subprocess命令。
 
 ## 核心功能
 
@@ -98,9 +109,19 @@ python main.py repo create --name my-repo --description "我的新仓库"
 # 获取仓库详情
 python main.py repo get --name my-repo
 
-# 删除仓库
+# ⚠️ 删除仓库（危险操作！不可逆！）
+# 执行前会提示二次确认，必须输入 'yes' 才能继续
 python main.py repo delete --name my-repo
 ```
+
+#### ⚠️ 删除仓库警告
+
+删除仓库操作是**不可逆**的！执行前请确保：
+- 已备份仓库数据
+- 确认要删除的仓库名称正确
+- 理解此操作的后果
+
+系统会在执行前要求您输入 'yes' 进行二次确认。
 
 ### 分支管理
 
