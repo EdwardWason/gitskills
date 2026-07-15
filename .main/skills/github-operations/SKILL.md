@@ -1,7 +1,7 @@
 ---
 name: "github-operations"
-version: "1.2.0"
-description: "GitHub仓库管理技能，支持仓库/分支/PR/Issue的CRUD操作。Do NOT use for IM messaging, git history rewriting, or repository cloning."
+version: "1.3.0"
+description: "GitHub仓库管理技能，支持仓库/分支/PR/Issue的CRUD操作。Do NOT use for repository cloning."
 permissions:
   - github_repo_read
   - github_repo_write
@@ -16,7 +16,7 @@ permissions:
 
 ⚠️ **安全警告**：本技能涉及GitHub仓库的创建、删除等操作。删除仓库等操作是不可逆的，请谨慎使用！
 
-本技能专注于GitHub仓库管理，包括仓库管理、分支管理、PR和Issue管理。所有操作通过GitHub API执行，不执行本地subprocess命令，不包含任何IM消息发送功能。
+本技能专注于GitHub仓库管理，包括仓库管理、分支管理、PR和Issue管理。所有操作通过GitHub API执行，不执行本地subprocess命令。
 
 ## 核心功能
 
@@ -41,10 +41,6 @@ permissions:
 
 - **创建Issue**：支持设置标题和内容
 - **列出Issue**：获取仓库的开放Issue
-
-### 5. Git历史清理指导
-
-- **清理指导**：提供清理Git历史中敏感文件的操作指南（仅指导，不执行命令）
 
 ## 环境配置
 
@@ -121,15 +117,6 @@ python main.py issue create --repo my-repo --title "Bug报告" --body "有东西
 python main.py issue list --repo my-repo
 ```
 
-### Git历史清理
-
-```bash
-# 获取清理敏感文件的操作指南
-python main.py clean --repo my-repo --file .env
-```
-
-> **注意**：clean命令仅提供操作指南，不会执行任何实际的git命令。请按照指南在本地手动执行。
-
 ## 安全措施
 
 1. **Token安全**：GitHub token存储在环境变量中，不硬编码在代码中
@@ -137,7 +124,6 @@ python main.py clean --repo my-repo --file .env
 3. **操作验证**：删除仓库等危险操作需要用户确认
 4. **日志记录**：记录所有操作，便于审计
 5. **错误处理**：处理异常情况，避免信息泄露
-6. **无外部数据出口**：不包含IM消息发送功能，避免数据泄露风险
 
 ## 常见问题
 
@@ -159,4 +145,4 @@ python main.py clean --repo my-repo --file .env
 
 ## 总结
 
-本技能专注于GitHub仓库管理，提供仓库、分支、PR和Issue的完整CRUD操作。通过使用本技能，用户可以安全、高效地管理GitHub仓库。所有操作通过GitHub API执行，不包含任何外部消息发送功能，确保数据安全。
+本技能专注于GitHub仓库管理，提供仓库、分支、PR和Issue的完整CRUD操作。通过使用本技能，用户可以安全、高效地管理GitHub仓库。所有操作通过GitHub API执行，确保数据安全。

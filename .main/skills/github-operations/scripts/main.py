@@ -244,62 +244,6 @@ class GitSkills:
         except Exception as e:
             logging.error(f"Error listing issues in {repo_name}: {type(e).__name__}")
             return f"错误: 无法列出Issue"
-    
-    def clean_git_history(self, repo_name, file_path):
-        """清理Git历史中的敏感文件（仅提供指导）
-        
-        由于安全考虑，此方法仅提供清理Git历史的操作指南，
-        不执行实际的subprocess命令。
-        
-        操作指南：
-        1. 在本地克隆仓库：git clone <repo_url>
-        2. 进入仓库目录：cd <repo_name>
-        3. 执行git filter-branch：git filter-branch --force --index-filter 'git rm --cached --ignore-unmatch <file_path>' --prune-empty --tag-name-filter cat -- --all
-        4. 强制推送到远程：git push origin --force --all 和 git push origin --force --tags
-        5. 通知所有协作者重新克隆仓库
-        
-        ⚠️ 警告：此操作会重写Git历史，需要谨慎使用！
-        """
-        # 输入验证
-        if not repo_name or not isinstance(repo_name, str):
-            raise ValueError("Repository name must be a non-empty string")
-        if not file_path or not isinstance(file_path, str):
-            raise ValueError("File path must be a non-empty string")
-        
-        try:
-            repo = self._call_with_retry(self.user.get_repo, repo_name)
-            clone_url = repo.clone_url
-            
-            guide = f"""
-⚠️ 安全警告：Git历史清理操作会重写仓库历史，此操作不可逆转！
-
-请在本地手动执行以下步骤清理仓库 '{repo_name}' 中的文件 '{file_path}'：
-
-1. 克隆仓库：
-   git clone {clone_url}
-
-2. 进入仓库目录：
-   cd {repo_name}
-
-3. 执行git filter-branch（重写历史）：
-   git filter-branch --force --index-filter 'git rm --cached --ignore-unmatch {file_path}' --prune-empty --tag-name-filter cat -- --all
-
-4. 强制推送到远程：
-   git push origin --force --all
-   git push origin --force --tags
-
-5. 通知所有协作者重新克隆仓库
-
-📝 建议：在执行此操作前，请确保：
-- 已备份仓库数据
-- 所有协作者已提交并推送本地更改
-- 理解此操作的风险和影响
-"""
-            return guide
-        except Exception as e:
-            logging.error(f"Error generating clean guide for repo {repo_name}: {type(e).__name__}")
-            return f"错误: 无法生成清理指南"
-
 
 
 def main():
@@ -372,11 +316,6 @@ def main():
     list_issues_parser = issue_subparsers.add_parser('list', help='列出Issue')
     list_issues_parser.add_argument('--repo', required=True, help='仓库名称')
     
-    # Git历史清理命令
-    clean_parser = subparsers.add_parser('clean', help='Git历史清理命令')
-    clean_parser.add_argument('--repo', required=True, help='仓库名称')
-    clean_parser.add_argument('--file', required=True, help='要清理的文件路径')
-    
     # 解析命令行参数
     args = parser.parse_args()
     
@@ -422,10 +361,6 @@ def main():
                 print(skills.create_issue(args.repo, args.title, args.body))
             elif args.issue_command == 'list':
                 print(skills.list_issues(args.repo))
-        
-        # 处理Git历史清理命令
-        elif args.command == 'clean':
-            print(skills.clean_git_history(args.repo, args.file))
         
     except ValueError as e:
         print(f"错误: {str(e)}")
