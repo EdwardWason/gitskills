@@ -1,8 +1,8 @@
 # GitSkills
 
-GitHub CLI-like tool designed for OpenClaw, allowing control of GitHub accounts through various IM channels.
+GitHub CLI-like tool designed for OpenClaw, providing GitHub repository management through API.
 
-GitHub CLI-like工具，专为OpenClaw设计，允许通过各种IM通道控制GitHub账号。
+GitHub CLI-like工具，专为OpenClaw设计，通过API提供GitHub仓库管理功能。
 
 ## 功能特性 | Features
 
@@ -11,7 +11,6 @@ GitHub CLI-like工具，专为OpenClaw设计，允许通过各种IM通道控制G
 - **PR管理 | PR Management**：创建、列出PR | Create, list PRs
 - **Issue管理 | Issue Management**：创建、列出Issue | Create, list issues
 - **安全措施 | Security Measures**：token存储在环境变量中 | Token stored in environment variables
-- **IM通道支持 | IM Channel Support**：Slack、Discord、Telegram、微信、邮件 | Slack, Discord, Telegram, WeChat, Email
 
 ## 安装说明 | Installation
 
@@ -33,20 +32,12 @@ GitHub CLI-like工具，专为OpenClaw设计，允许通过各种IM通道控制G
    ```
    # GitHub API Token
    GITHUB_TOKEN=your-github-token
-   
-   # IM Channel Configuration
-   IM_CHANNEL=your-im-channel
-   IM_API_KEY=your-im-api-key
    ```
 
    创建`.env`文件：
    ```
    # GitHub API Token
    GITHUB_TOKEN=你的GitHub令牌
-   
-   # IM通道配置
-   IM_CHANNEL=你的IM通道
-   IM_API_KEY=你的IM API密钥
    ```
 
 ### 方法二：通过Releases安装 | Method 2: Install via Releases
@@ -65,7 +56,7 @@ GitHub CLI-like工具，专为OpenClaw设计，允许通过各种IM通道控制G
 3. **配置环境变量 | Configure Environment Variables**：
    - 安装完成后，在OpenClaw技能管理页面找到「github-operations」技能
    - 点击「配置」按钮
-   - 填写所需的环境变量（GitHub Token、IM通道配置等）
+   - 填写所需的环境变量（GitHub Token）
    - 保存配置
 
 ### 方法三：手动安装到OpenClaw | Method 3: Manual Installation to OpenClaw
@@ -110,7 +101,7 @@ python main.py repo create --name my-repo --description "My new repository"  # E
 # 获取仓库详情 | Get repository details
 python main.py repo get --name my-repo
 
-# 删除仓库 | Delete repository
+# 删除仓库 | Delete repository (requires confirmation)
 python main.py repo delete --name my-repo
 ```
 
@@ -150,84 +141,7 @@ python main.py issue list --repo my-repo
 - **操作验证 | Operation Verification**：重要操作需要用户确认 | Important operations require user confirmation
 - **日志记录 | Logging**：记录所有操作，便于审计 | Record all operations for auditing
 - **错误处理 | Error Handling**：处理异常情况，避免信息泄露 | Handle exceptions to avoid information leakage
-
-## 支持的IM通道 | Supported IM Channels
-
-- **Slack**：企业协作平台 | Enterprise collaboration platform
-- **Discord**：游戏社区平台 | Gaming community platform
-- **Telegram**：即时通讯应用 | Instant messaging app
-- **飞书**：字节跳动企业协作平台 | ByteDance enterprise collaboration platform
-- **企业微信**：腾讯企业协作平台 | Tencent enterprise collaboration platform
-- **微信个人号**：通过iLink Bot接入 | WeChat personal account via iLink Bot
-- **邮件**：传统邮件通知 | Traditional email notification
-
-## IM通道配置 | IM Channel Configuration
-
-### 飞书配置 | Feishu Configuration
-
-1. 获取飞书机器人Webhook URL | Get Feishu bot Webhook URL
-2. 在`.env`文件中添加 | Add to `.env` file：
-   ```
-   FEISHU_WEBHOOK_URL=https://open.feishu.cn/open-apis/bot/v2/hook/your-webhook-id
-   ```
-3. 运行示例 | Run example：
-   ```bash
-   python examples/feishu_integration.py
-   ```
-
-### 企业微信配置 | WeCom Configuration
-
-1. 获取企业微信应用配置 | Get WeCom app configuration
-2. 在`.env`文件中添加 | Add to `.env` file：
-   ```
-   WECOM_CORP_ID=your-corp-id
-   WECOM_APP_SECRET=your-app-secret
-   WECOM_AGENT_ID=your-agent-id
-   ```
-
-   ```
-   WECOM_CORP_ID=你的企业ID
-   WECOM_APP_SECRET=你的应用密钥
-   WECOM_AGENT_ID=你的应用ID
-   ```
-3. 运行示例 | Run example：
-   ```bash
-   python examples/wechat_integration.py
-   ```
-
-### 微信个人号配置 | WeChat Personal Account Configuration
-
-1. 获取iLink Bot Token | Get iLink Bot Token
-2. 在`.env`文件中添加 | Add to `.env` file：
-   ```
-   WEIXIN_BOT_TOKEN=your-ilink-bot-token
-   WEIXIN_API_URL=https://api.ilink.qq.com
-   ```
-
-   ```
-   WEIXIN_BOT_TOKEN=你的iLink Bot Token
-   WEIXIN_API_URL=https://api.ilink.qq.com
-   ```
-3. 运行示例 | Run example：
-   ```bash
-   python examples/wechat_integration.py
-   ```
-
-### Slack配置 | Slack Configuration
-
-1. 获取Slack API Token | Get Slack API Token
-2. 在`.env`文件中添加 | Add to `.env` file：
-   ```
-   SLACK_API_TOKEN=your-slack-api-token
-   ```
-
-   ```
-   SLACK_API_TOKEN=你的Slack API Token
-   ```
-3. 运行示例 | Run example：
-   ```bash
-   python examples/slack_integration.py
-   ```
+- **无外部数据出口 | No External Data Egress**：不包含IM消息发送功能，避免数据泄露风险 | No IM messaging functionality to prevent data leakage
 
 ## 贡献指南 | Contribution Guide
 
